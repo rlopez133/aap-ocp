@@ -35,7 +35,7 @@
 
   - name: debug loadbalancer
     ansible.builtin.debug:
-      var: "{{ loadbalancer }}"
+      var: loadbalancer
 
   - name: Create route53 entry for the load balancer
     community.aws.route53:
