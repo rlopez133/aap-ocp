@@ -24,7 +24,7 @@
             targetPort: 8080
           selector:
             name: loadbalancer
-​
+
   - name: Get a list of all service objects
     kubernetes.core.k8s_info:
       api_version: v1
@@ -32,10 +32,11 @@
       name: loadbalancer
       namespace: "{{ namespace }}"
     register: loadbalancer
-​
+
   - name: debug loadbalancer
-    debug: var="{{ loadbalancer }}"
-​
+    ansible.builtin.debug:
+      var: "{{ loadbalancer }}"
+
   - name: Create route53 entry for the load balancer
     aws.community.route53:
       state: present
