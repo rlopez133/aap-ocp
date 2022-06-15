@@ -7,6 +7,7 @@
     - kubernetes.core
     - community.aws
     - ansible.utils
+    - community.general
     
   tasks:
   - name: Identify the Kubernetes address for the load balancer svc
@@ -35,15 +36,15 @@
     register: loadbalancer
   
   - name: ipA Fact
-    set_fact:
+    ansible.builtin.set_fact:
       ipA: "{{ loadbalancer | json_query(\"[].stdout_lines[?contains(@, 'hostname')][]\")  }}"
   
   - name: debug of ipA
-    debug:
+    ansible.builtin.debug:
       msg: "{{ ipA }}"
   
   - name: Get Facts
-    set_fact:
+    ansible.builtin.set_fact:
       myloadbalancer: "{{ lookup('kubernetes.core.k8s', api_version='v1', kind='Service') }}"
    
   - name: flatten complex object
