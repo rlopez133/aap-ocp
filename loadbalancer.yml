@@ -2,6 +2,9 @@
 - host: localhost
   become: false
   gather_facts: false
+  collections:
+    - kubernetes.core
+    - community.aws
   tasks:
   - name: Identify the Kubernetes address for the load balancer svc
     kubernetes.core.k8s:
