@@ -1,0 +1,63 @@
+---
+- name: Self-service LB
+  hosts: localhost
+  become: false
+  gather_facts: false
+  collections:
+    - kubernetes.core
+    - community.aws 
+    
+  tasks:
+  - name: Identify the Kubernetes address for the load balancer svc
+    kubernetes.core.k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: loadbalancer
+          namespace: "{{ namespace }}"
+        spec:
+          type: LoadBalancer
+          ports:
+          - port: 8080
+            targetPort: 8080
+          selector:
+            name: loadbalancer
+​
+  - name: Get a list of all service objects
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Service
+      name: loadbalancer
+      namespace: "{{ namespace }}"
+    register: loadbalancer
+​
+  - name: debug loadbalancer
+    debug: var="{{ loadbalancer }}"
+​
+  - name: Create route53 entry for the load balancer
+    aws.community.route53:
+      state: present
+      zone: "{{ domain }}"
+      record: "{{ loadbalancer }}-{{ namespace }}"
+      type: A
+      ttl: 60
+      value: "{{ loadbalancer_svc.status.loadBalancer.ingress[0].ip }}"
+    
+  - name: Identify the route
+    kubernetes.core.k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Route
+        metadata:
+          name: loadbalancer
+          namespace: "{{ namespace }}"
+        spec:
+          to:
+            kind: Service
+            name: loadbalancer
+          host: "{{ loadbalancer_svc.stdout }}-{{ namespace }}.{{ domain }}"
+          port:
+            targetPort: 8080
