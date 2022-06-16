@@ -23,19 +23,6 @@
       kind: VolumeSnapshotClass
     register: volumesnapshotclass
 
- # - name: Debug pvc path
- #   ansible.builtin.debug:
- #     var: item
- #   loop: "{{ pvc | community.general.json_query('resources[*].metadata.name') }}"
-     
- # - name: flatten volumesnapshotclass object
- #   ansible.builtin.set_fact:
- #     volumesnapshotclass_paths: "{{ lookup('ansible.utils.to_paths', volumesnapshotclass) }}"
- 
- # - name: Debug volumesnapshotclass path
- #   ansible.builtin.debug:
- #     msg: "{{ volumesnapshotclass_paths['resources[0].metadata.name'] }}"
-
   - name: Create a VolumeSnapshotClass for each volume
     kubernetes.core.k8s:
       state: present
@@ -50,6 +37,3 @@
           source:
             persistentVolumeClaimName: "{{ item }}"
     loop: "{{ pvc | community.general.json_query('resources[*].metadata.name') }}"
-
-
-  #volumeSnapshotClassName: "{{ volumesnapshotclass_paths['resources[0].metadata.name'] }}"
