@@ -22,8 +22,8 @@
         spec:
           type: LoadBalancer
           ports:
-          - port: "{{ port | default(8080) }}"
-            targetPort: "{{ target_port | default(8080) }}"
+          - port: "{{ port | default('8080') }}"
+            targetPort: "{{ target_port | default('8080') }}"
           selector:
             name: "{{ name | default('loadbalancer', true) }}"
 
