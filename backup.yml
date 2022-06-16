@@ -16,6 +16,10 @@
       kind: PersistentVolumeClaim
       namespace: "{{ my_namespace }}"
     register: pvc
+ 
+ - name: Debug pvc
+    ansible.builtin.debug:
+      var: pvc
     
   - name: Get the default VolumeSnapshotClass
     kubernetes.core.k8s_info:
