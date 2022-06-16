@@ -34,7 +34,11 @@
       name: loadbalancer
       namespace: "{{ namespace }}"
     register: loadbalancer
-  
+ 
+  - name: debug loadbalancer
+    ansible.builtin.debug:
+      var: loadbalancer
+ 
   - name: ipA Fact
     ansible.builtin.set_fact:
       ipA: "{{ loadbalancer | json_query(\"[].stdout_lines[?contains(@, 'hostname')][]\")  }}"
@@ -54,10 +58,6 @@
   - name: Debug object
     ansible.builtin.debug:
       var: paths
-
-  - name: debug loadbalancer
-    ansible.builtin.debug:
-      var: loadbalancer
 
   - name: Create route53 entry for the load balancer
     community.aws.route53:
