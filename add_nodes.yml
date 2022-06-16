@@ -1,0 +1,21 @@
+---
+- name: Get dynamic inventory
+  hosts: localhost
+  become: false
+  gather_facts: true
+  collections:
+    - kubernetes.core
+    - community.aws
+    - ansible.utils
+    - community.general
+    
+  tasks:
+  - name: Get kubernetes nodes
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: Node
+    register: nodes
+  
+  - name: Debug
+    ansible.builtin.debug:
+      var: nodes
