@@ -10,7 +10,7 @@
     - community.general
     
   tasks:
-  - name: list volumes in a namespace and record the values
+  - name: Get volumes in a namespace and record the values
     kubernetes.core.k8s_info:
       api_version: v1
       kind: PersistentVolumeClaim
@@ -29,7 +29,7 @@
 
   - name: Debug pvc path
     ansible.builtin.debug:
-      var: pvc_paths
+      msg: "{{ pvc_paths['resources[0].metadata.name'] }}"
      
   - name: flatten volumesnapshotclass object
     ansible.builtin.set_fact:
@@ -37,4 +37,4 @@
  
   - name: Debug volumesnapshotclass path
     ansible.builtin.debug:
-      var: volumesnapshotclass_paths
+      msg: "{{ volumesnapshotclass_paths['resources[0].metadata.name'] }}"
