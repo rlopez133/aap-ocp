@@ -17,15 +17,15 @@
         apiVersion: v1
         kind: Service
         metadata:
-          name: "{{ name | default('loadbalancer', true) }}"
+          name: loadbalancer
           namespace: "{{ namespace }}"
         spec:
           type: LoadBalancer
           ports:
-          - port: "{{ port | default('8080') }}"
-            targetPort: "{{ target_port | default('8080') }}"
+          - port: 8080
+            targetPort: 8080
           selector:
-            name: "{{ name | default('loadbalancer', true) }}"
+            name: loadbalancer
 
   - name: Get a list of all service objects
     kubernetes.core.k8s_info:
