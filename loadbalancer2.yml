@@ -18,7 +18,7 @@
         kind: Service
         metadata:
           name: "{{ name | default('loadbalancer', true) }}"
-          namespace: "{{ namespace }}"
+          namespace: "{{ my_namespace }}"
         spec: "{{ spec | from_yaml }}"
     vars:
       spec: |
@@ -34,7 +34,7 @@
       api_version: v1
       kind: Service
       name: "{{ name | default('loadbalancer', true) }}"
-      namespace: "{{ namespace }}"
+      namespace: "{{ my_namespace }}"
     register: loadbalancer
   
   - name: flatten complex object
@@ -45,7 +45,7 @@
     community.aws.route53:
       state: present
       zone: "{{ domain }}"
-      record: "{{ paths['resources[0].metadata.name'] }}-{{ namespace }}.{{ domain }}"
+      record: "{{ paths['resources[0].metadata.name'] }}-{{ my_namespace }}.{{ domain }}"
       type: CNAME
       ttl: 60
       value: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
@@ -58,9 +58,9 @@
         kind: Route
         metadata:
           name: "{{ name | default('loadbalancer') }}"
-          namespace: "{{ namespace }}"
+          namespace: "{{ my_namespace }}"
         spec:
           to:
             kind: Service
             name: "{{ name | default('loadbalancer',true) }}"
-          host: "{{ paths['resources[0].metadata.name'] }}-{{ namespace }}.{{ domain }}"
+          host: "{{ paths['resources[0].metadata.name'] }}-{{ my_namespace }}.{{ domain }}"
