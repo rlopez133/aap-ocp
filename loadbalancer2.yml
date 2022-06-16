@@ -10,50 +10,34 @@
     - community.general
     
   tasks:
-#  - name: Identify the Kubernetes address for the load balancer svc
-#    kubernetes.core.k8s:
-#      state: present
-#      definition:
-#        apiVersion: v1
-#        kind: Service
-#        metadata:
-#          name: "{{ name }}"
-#          namespace: "{{ namespace }}"
-#        spec:
-#          type: LoadBalancer
-#          ports:
-#          - port: "{{ port }}"
-#            targetPort: "{{ target_port }}"
-#          selector:
-#            name: "{{ name }}"
+  - name: Ensure LoadBalancer Service is avail, otherwise create
+    kubernetes.core.k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: "{{ name | default('loadbalancer') }}"
+          namespace: "{{ namespace }}"
+        spec:
+          type: LoadBalancer
+          ports:
+          - port: "{{ port | default(8080) }}"
+            targetPort: "{{ target_port | default(8080) }}"
+          selector:
+            name: "{{ name | default('loadbalancer') }}"
 
   - name: Get a list of all service objects
     kubernetes.core.k8s_info:
       api_version: v1
       kind: Service
-      name: "{{ name }}"
+      name: "{{ name | default('loadbalancer') }}"
       namespace: "{{ namespace }}"
     register: loadbalancer
- 
-#  - name: debug loadbalancer
-#    ansible.builtin.debug:
-#      var: loadbalancer
-   
+  
   - name: flatten complex object
     ansible.builtin.set_fact:
       paths: "{{ lookup('ansible.utils.to_paths', loadbalancer) }}"
-    
-#  - name: Debug object
-#    ansible.builtin.debug:
-#      var: paths
-  
-#  - name: Get just the hostname
-#    ansible.builtin.debug:
-#      msg: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
-
- # - name: Get just the name
- #   ansible.builtin.debug:
- #     msg: "{{ paths['resources[0].metadata.name'] }}"
       
   - name: Create route53 entry for the load balancer
     community.aws.route53:
@@ -71,10 +55,10 @@
         apiVersion: route.openshift.io/v1
         kind: Route
         metadata:
-          name: "{{ name }}"
+          name: "{{ name | default('loadbalancer') }}"
           namespace: "{{ namespace }}"
         spec:
           to:
             kind: Service
-            name: "{{ name }}"
+            name: "{{ name | default('loadbalancer') }}"
           host: "{{ paths['resources[0].metadata.name'] }}-{{ namespace }}.{{ domain }}"
