@@ -49,7 +49,7 @@
   
   - name: Get just the resource
     ansible.builtin.debug:
-      msg: "{{ paths['ansible_facts.paths.resources[0]'] }}"
+      msg: "{{ paths.resource[0].kind }}"
       #msg: "{{ paths['ansible_facts.resources[0].status.loadBalancer.ingress[0].hostname'] }}"
 
   - name: Create route53 entry for the load balancer
