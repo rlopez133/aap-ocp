@@ -26,6 +26,10 @@
   - name: flatten pvc object
     ansible.builtin.set_fact:
       pvc_paths: "{{ lookup('ansible.utils.to_paths', pvc) }}"
+      
+  - name: Debug pvc path
+    ansible.builtin.debug:
+      var: pvc_paths
 
   - name: Debug pvc path
     ansible.builtin.debug:
