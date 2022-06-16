@@ -51,6 +51,10 @@
     ansible.builtin.debug:
       msg: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
 
+  - name: Get LB svc out
+    ansible.builtin.debug:
+      msg: "{{ loadbalancer_svc.stdout }}"
+
   - name: Create route53 entry for the load balancer
     community.aws.route53:
       state: present
