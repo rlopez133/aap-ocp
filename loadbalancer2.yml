@@ -48,7 +48,7 @@
       ttl: 60
       value: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
     
-  - name: Identify the route
+  - name: Ensure LoadBalancer route exists, otherwise create
     kubernetes.core.k8s:
       state: present
       definition:
