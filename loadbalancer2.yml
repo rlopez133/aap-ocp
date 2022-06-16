@@ -39,21 +39,17 @@
     ansible.builtin.debug:
       var: loadbalancer
  
-  - name: ipA Fact
-    ansible.builtin.set_fact:
-      ipA: "{{ loadbalancer | json_query(\"[].stdout_lines[?contains(@, 'hostname')][]\")  }}"
+#  - name: ipA Fact
+#    ansible.builtin.set_fact:
+#      ipA: "{{ loadbalancer | json_query(\"[].stdout_lines[?contains(@, 'hostname')][]\")  }}"
   
-  - name: debug of ipA
-    ansible.builtin.debug:
-      msg: "{{ ipA }}"
-  
-  - name: Get Facts
-    ansible.builtin.set_fact:
-      myloadbalancer: "{{ lookup('kubernetes.core.k8s', api_version='v1', kind='Service') }}"
+#  - name: debug of ipA
+#    ansible.builtin.debug:
+#      msg: "{{ ipA }}"
    
   - name: flatten complex object
     ansible.builtin.set_fact:
-      paths: "{{ lookup('ansible.utils.to_paths', myloadbalancer) }}"
+      paths: "{{ lookup('ansible.utils.to_paths', loadbalancer) }}"
     
   - name: Debug object
     ansible.builtin.debug:
