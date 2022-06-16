@@ -19,7 +19,7 @@
     
   - name: Get the default VolumeSnapshotClass
     kubernetes.core.k8s_info:
-      apiversion: snapshot.storage.k8s.io/v1
+      api_version: snapshot.storage.k8s.io/v1
       kind: VolumeSnapshotClass
     register: volumesnapshotclass
     
