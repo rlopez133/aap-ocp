@@ -17,7 +17,7 @@
         apiVersion: v1
         kind: Service
         metadata:
-          name: "{{ name | default('loadbalancer') }}"
+          name: "{{ name | default('loadbalancer', true) }}"
           namespace: "{{ namespace }}"
         spec:
           type: LoadBalancer
@@ -25,13 +25,13 @@
           - port: "{{ port | default(8080) }}"
             targetPort: "{{ target_port | default(8080) }}"
           selector:
-            name: "{{ name | default('loadbalancer') }}"
+            name: "{{ name | default('loadbalancer', true) }}"
 
   - name: Get a list of all service objects
     kubernetes.core.k8s_info:
       api_version: v1
       kind: Service
-      name: "{{ name | default('loadbalancer') }}"
+      name: "{{ name | default('loadbalancer', true) }}"
       namespace: "{{ namespace }}"
     register: loadbalancer
   
@@ -60,5 +60,5 @@
         spec:
           to:
             kind: Service
-            name: "{{ name | default('loadbalancer') }}"
+            name: "{{ name | default('loadbalancer',true) }}"
           host: "{{ paths['resources[0].metadata.name'] }}-{{ namespace }}.{{ domain }}"
