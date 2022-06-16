@@ -51,18 +51,14 @@
     ansible.builtin.debug:
       msg: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
 
-  - name: Get LB svc out
-    ansible.builtin.debug:
-      msg: "{{ loadbalancer }}"
-
   - name: Create route53 entry for the load balancer
     community.aws.route53:
       state: present
       zone: "{{ domain }}"
-      record: "{{ loadbalancer }}-{{ namespace }}.{{ domain }}"
+      record: "{{ paths['resources[0].metadata.name'] }}-{{ namespace }}.{{ domain }}"
       type: A
       ttl: 60
-      value: "{{ loadbalancer_svc.status.loadBalancer.ingress[0].ip }}"
+      value: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
     
   - name: Identify the route
     kubernetes.core.k8s:
@@ -77,6 +73,6 @@
           to:
             kind: Service
             name: loadbalancer
-          host: "{{ loadbalancer_svc.stdout }}-{{ namespace }}.{{ domain }}"
+          host: "{{ paths['resources[0].metadata.name'] }}-{{ namespace }}.{{ domain }}"
           port:
             targetPort: 8080
