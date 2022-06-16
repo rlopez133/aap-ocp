@@ -38,14 +38,6 @@
   - name: debug loadbalancer
     ansible.builtin.debug:
       var: loadbalancer
- 
-#  - name: ipA Fact
-#    ansible.builtin.set_fact:
-#      ipA: "{{ loadbalancer | json_query(\"[].stdout_lines[?contains(@, 'hostname')][]\")  }}"
-  
-#  - name: debug of ipA
-#    ansible.builtin.debug:
-#      msg: "{{ ipA }}"
    
   - name: flatten complex object
     ansible.builtin.set_fact:
@@ -54,6 +46,10 @@
   - name: Debug object
     ansible.builtin.debug:
       var: paths
+  
+  - name: Get just the resource
+     ansible.builtin.debug:
+       msg: "{{ paths['ansible_facts.resources[0].status.loadBalancer.ingress[0].hostname'] }}"
 
   - name: Create route53 entry for the load balancer
     community.aws.route53:
