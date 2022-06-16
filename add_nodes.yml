@@ -10,7 +10,7 @@
     - community.general
     
   tasks:
-  - name: Get kubernetes nodes
+  - name: Get volumes in a namespace and record the values
     kubernetes.core.k8s_info:
       api_version: v1
       kind: Node
@@ -18,4 +18,5 @@
   
   - name: Debug
     ansible.builtin.debug:
-      var: nodes
+      msg: "{{ item }}"
+    loop: "{{ nodes | community.general.json_query('resources[*].metadata.name') }}"
