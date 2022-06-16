@@ -10,11 +10,19 @@
     - community.general
     
   tasks:
-  - name: Get volumes in a namespace and record the values
+  - name: Get nodes
     kubernetes.core.k8s_info:
       api_version: v1
       kind: Node
     register: nodes
+
+  - name: flatten nodes object
+    ansible.builtin.set_fact:
+      paths: "{{ lookup('ansible.utils.to_paths', nodes) }}"
+
+  - name: flatten debug
+    ansible.builtin.debug:
+      var: paths
   
   - name: Debug
     ansible.builtin.debug:
