@@ -53,13 +53,13 @@
 
   - name: Get LB svc out
     ansible.builtin.debug:
-      msg: "{{ loadbalancer_svc.stdout }}"
+      msg: "{{ loadbalancer }}"
 
   - name: Create route53 entry for the load balancer
     community.aws.route53:
       state: present
       zone: "{{ domain }}"
-      record: "{{ loadbalancer }}-{{ namespace }}"
+      record: "{{ loadbalancer }}-{{ namespace }}.{{ domain }}"
       type: A
       ttl: 60
       value: "{{ loadbalancer_svc.status.loadBalancer.ingress[0].ip }}"
