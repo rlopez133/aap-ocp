@@ -47,10 +47,14 @@
     ansible.builtin.debug:
       var: paths
   
-  - name: Get just the resource
+  - name: Get just the hostname
     ansible.builtin.debug:
       msg: "{{ paths['resources[0].status.loadBalancer.ingress[0].hostname'] }}"
 
+  - name: Get just the name
+    ansible.builtin.debug:
+      msg: "{{ paths['resources[0].metadata.name'] }}"
+      
   - name: Create route53 entry for the load balancer
     community.aws.route53:
       state: present
