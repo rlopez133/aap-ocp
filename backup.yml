@@ -16,10 +16,6 @@
       kind: PersistentVolumeClaim
       namespace: "{{ my_namespace }}"
     register: pvc
- 
- - name: Debug pvc
-    ansible.builtin.debug:
-      var: pvc
     
   - name: Get the default VolumeSnapshotClass
     kubernetes.core.k8s_info:
@@ -30,14 +26,11 @@
   - name: flatten pvc object
     ansible.builtin.set_fact:
       pvc_paths: "{{ lookup('ansible.utils.to_paths', pvc) }}"
-      
-  - name: Debug pvc path
-    ansible.builtin.debug:
-      var: pvc_paths
 
   - name: Debug pvc path
     ansible.builtin.debug:
-      msg: "{{ pvc_paths['resources[0].metadata.name'] }}"
+      var: item
+    loop: "{{ pvc_paths | community.general.json_query('resources[*].metadata.name') }}"
      
   - name: flatten volumesnapshotclass object
     ansible.builtin.set_fact:
@@ -46,3 +39,11 @@
   - name: Debug volumesnapshotclass path
     ansible.builtin.debug:
       msg: "{{ volumesnapshotclass_paths['resources[0].metadata.name'] }}"
+
+  - name: Create a VolumeSnapshotClass for each volume
+    kubernetes.core.k8s:
+      state: present
+      definition:
+        apiVersion:  snapshot.storage.k8s.io/v1
+        kind: VolumeSnapshot
+        metadata: "{{ pvc_paths['resources[0].metadata.name'] }}-{{ ansible_data_time.date }}"
