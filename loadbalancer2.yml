@@ -20,14 +20,14 @@
           name: "{{ name | default('loadbalancer', true) }}"
           namespace: "{{ namespace }}"
         spec: "{{ spec | from_yaml }}"
-     vars:
-       spec: |
-         type: LoadBalancer
-         ports:
-         - port: {{ port }}
-           targetPort: {{ port }}
-         selector:
-           name: "{{ name | default('loadbalancer', true) }}"
+    vars:
+      spec: |
+        type: LoadBalancer
+        ports:
+        - port: {{ port }}
+          targetPort: {{ port }}
+        selector:
+          name: "{{ name | default('loadbalancer', true) }}"
 
   - name: Get a list of all service objects
     kubernetes.core.k8s_info:
